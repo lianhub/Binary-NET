@@ -1,0 +1,1 @@
+Requires Microsoft Visual Studio 2010 and .NET Framework 4.0
