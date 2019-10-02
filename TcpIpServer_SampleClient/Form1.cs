@@ -22,7 +22,7 @@ namespace TcpIpServer_SampleClient
          * Constants
          * ########################################################################################## */
         private const int RCVBUFFERSIZE = 256; // buffer size for receive buffer
-        private const string DEFAULTIP = "127.0.0.1";
+        private const string DEFAULTIP = "169.254.28.28";//"127.0.0.1";
         private const string DEFAULTPORT = "200";
         private const int TIMERTICK = 100;
 
@@ -120,6 +120,12 @@ namespace TcpIpServer_SampleClient
              * character in the buffer needs to be a termination character, so that the TCP/IP-Server knows
              * when the TCP stream ends. In this case, the termination character is '0'.
              * ########################################################################################## */
+            byte[] inBuf = new byte[136];
+            inBuf[0] = 0x34; inBuf[1] = 0x12; inBuf[2] = 0xcf; inBuf[3] = 0xbe;
+            inBuf[4] = 0x78;
+            inBuf[0x20] = 1;
+            inBuf[0x34] = 0x48; inBuf[0x35] = 0x65; inBuf[0x36] = 0x6c; inBuf[0x37] = 0x6c;
+
             ASCIIEncoding enc = new ASCIIEncoding();
             byte[] tempBuffer = enc.GetBytes(rtb_sendMsg.Text);
             byte[] sendBuffer = new byte[tempBuffer.Length + 1];
@@ -132,7 +138,8 @@ namespace TcpIpServer_SampleClient
              * ########################################################################################## */
             try
             {
-                int send = _socket.Send(sendBuffer);
+                //int send = _socket.Send(sendBuffer);
+                int send = _socket.Send(inBuf);
                 if (send == 0)
                     throw new Exception();
                 else
@@ -146,9 +153,16 @@ namespace TcpIpServer_SampleClient
                     if (asynRes.AsyncWaitHandle.WaitOne())
                     {
                         int res = _socket.EndReceive(asynRes);
+
+                        res = 80;
+                        byte[] outBuf = new byte[81];
+                        Array.Copy(_rcvBuffer, 0x34, outBuf, 0, 81);
+
                         char[] resChars = new char[res + 1];
                         Decoder d = Encoding.UTF8.GetDecoder();
-                        int charLength = d.GetChars(_rcvBuffer, 0, res, resChars, 0, true);
+                        //int charLength = d.GetChars(_rcvBuffer, 0, res, resChars, 0, true);
+                        int charLength = d.GetChars(outBuf, 0, res, resChars, 0, true);
+
                         String result = new String(resChars);
                         rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": " + result);
                         rtb_sendMsg.Clear();
