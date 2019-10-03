@@ -120,11 +120,9 @@ namespace TcpIpServer_SampleClient
              * character in the buffer needs to be a termination character, so that the TCP/IP-Server knows
              * when the TCP stream ends. In this case, the termination character is '0'.
              * ########################################################################################## */
-            byte[] inBuf = new byte[136];
-            inBuf[0] = 0x34; inBuf[1] = 0x12; inBuf[2] = 0xcf; inBuf[3] = 0xbe;
-            inBuf[4] = 0x78;
-            inBuf[0x20] = 1;
-            inBuf[0x34] = 0x48; inBuf[0x35] = 0x65; inBuf[0x36] = 0x6c; inBuf[0x37] = 0x6c;
+            byte[] inBuf = new byte[112];                           
+            inBuf[4] = 0xc;    inBuf[12] = 0x1; inBuf[14] = 0x1;
+            inBuf[0x10] = 0x8;
 
             ASCIIEncoding enc = new ASCIIEncoding();
             byte[] tempBuffer = enc.GetBytes(rtb_sendMsg.Text);
@@ -154,9 +152,9 @@ namespace TcpIpServer_SampleClient
                     {
                         int res = _socket.EndReceive(asynRes);
 
-                        res = 80;
-                        byte[] outBuf = new byte[81];
-                        Array.Copy(_rcvBuffer, 0x34, outBuf, 0, 81);
+                        res = 76;
+                        byte[] outBuf = new byte[res+1];
+                        Array.Copy(_rcvBuffer, 0x20, outBuf, 0, res+1);
 
                         char[] resChars = new char[res + 1];
                         Decoder d = Encoding.UTF8.GetDecoder();
