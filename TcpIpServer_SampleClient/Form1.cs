@@ -21,7 +21,7 @@ namespace TcpIpServer_SampleClient
         /* ##########################################################################################
          * Constants
          * ########################################################################################## */
-        private const int RCVBUFFERSIZE = 256; // buffer size for receive buffer
+        private const int RCVBUFFERSIZE = 1024; // buffer size for receive buffer
         private const string DEFAULTIP = "169.254.28.28";//"127.0.0.1";
         private const string DEFAULTPORT = "200";
         private const int TIMERTICK = 100;
@@ -120,8 +120,8 @@ namespace TcpIpServer_SampleClient
              * character in the buffer needs to be a termination character, so that the TCP/IP-Server knows
              * when the TCP stream ends. In this case, the termination character is '0'.
              * ########################################################################################## */
-            byte[] inBuf = new byte[112];                           
-            inBuf[4] = 0xc;    inBuf[12] = 0x1; inBuf[14] = 0x1;
+            byte[] inBuf = new byte[512];                           
+            inBuf[4] = 0x3e+1;    inBuf[12] = 0x1; inBuf[14] = 0x1;
             inBuf[0x10] = 0x2;
 
             ASCIIEncoding enc = new ASCIIEncoding();
@@ -147,16 +147,16 @@ namespace TcpIpServer_SampleClient
                      * When message receive is complete, show the received message in text field.
                      * ########################################################################################## */
                     rtb_statMsg.AppendText(DateTime.Now.ToString() + ": Message successfully sent!\n");
-                    IAsyncResult asynRes = _socket.BeginReceive(_rcvBuffer, 0, 256, SocketFlags.None, null, null);
+                    IAsyncResult asynRes = _socket.BeginReceive(_rcvBuffer, 0, 1024, SocketFlags.None, null, null);
                     if (asynRes.AsyncWaitHandle.WaitOne())
                     {
                         int res = _socket.EndReceive(asynRes);                            
                         if (_rcvBuffer[0x10] == 3)
                         {
                             if (_rcvBuffer[0x14] == 8)
-                            rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-bootstrap");
+                                rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-bootstrap");
                             else
-                            rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-call");
+                                rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-call");
                         }
                         else
                             rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is others");
