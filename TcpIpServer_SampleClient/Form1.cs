@@ -120,9 +120,10 @@ namespace TcpIpServer_SampleClient
              * character in the buffer needs to be a termination character, so that the TCP/IP-Server knows
              * when the TCP stream ends. In this case, the termination character is '0'.
              * ########################################################################################## */
-            byte[] inBuf = new byte[512];                           
-            inBuf[4] = 0x3e+1;    inBuf[12] = 0x1; inBuf[14] = 0x1;
-            inBuf[0x10] = 0x2;
+            int varLen = 3;
+            byte[] inBuf = new byte[512- varLen*8];                           
+            inBuf[4] = (byte)(0x3e + 1 - varLen);    inBuf[12] = 0x1; inBuf[14] = 0x1;
+            inBuf[0x10] = 0x8;
 
             ASCIIEncoding enc = new ASCIIEncoding();
             byte[] tempBuffer = enc.GetBytes(rtb_sendMsg.Text);
@@ -153,13 +154,13 @@ namespace TcpIpServer_SampleClient
                         int res = _socket.EndReceive(asynRes);                            
                         if (_rcvBuffer[0x10] == 3)
                         {
-                            if (_rcvBuffer[0x14] == 8)
-                                rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-bootstrap");
+                            if (_rcvBuffer[0x12] == 8)
+                                rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-bootstrap " + inBuf.Length + " = " +res);
                             else
-                                rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-call");
+                                rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-call" + inBuf.Length + " = "+res);
                         }
                         else
-                            rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is others");
+                            rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is others" + inBuf.Length + " = "+res);
 
                         rtb_sendMsg.Clear();
                     }
