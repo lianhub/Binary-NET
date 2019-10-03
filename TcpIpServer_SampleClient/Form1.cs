@@ -122,7 +122,7 @@ namespace TcpIpServer_SampleClient
              * ########################################################################################## */
             byte[] inBuf = new byte[112];                           
             inBuf[4] = 0xc;    inBuf[12] = 0x1; inBuf[14] = 0x1;
-            inBuf[0x10] = 0x8;
+            inBuf[0x10] = 0x2;
 
             ASCIIEncoding enc = new ASCIIEncoding();
             byte[] tempBuffer = enc.GetBytes(rtb_sendMsg.Text);
@@ -150,19 +150,17 @@ namespace TcpIpServer_SampleClient
                     IAsyncResult asynRes = _socket.BeginReceive(_rcvBuffer, 0, 256, SocketFlags.None, null, null);
                     if (asynRes.AsyncWaitHandle.WaitOne())
                     {
-                        int res = _socket.EndReceive(asynRes);
+                        int res = _socket.EndReceive(asynRes);                            
+                        if (_rcvBuffer[0x10] == 3)
+                        {
+                            if (_rcvBuffer[0x14] == 8)
+                            rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-bootstrap");
+                            else
+                            rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-call");
+                        }
+                        else
+                            rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is others");
 
-                        res = 76;
-                        byte[] outBuf = new byte[res+1];
-                        Array.Copy(_rcvBuffer, 0x20, outBuf, 0, res+1);
-
-                        char[] resChars = new char[res + 1];
-                        Decoder d = Encoding.UTF8.GetDecoder();
-                        //int charLength = d.GetChars(_rcvBuffer, 0, res, resChars, 0, true);
-                        int charLength = d.GetChars(outBuf, 0, res, resChars, 0, true);
-
-                        String result = new String(resChars);
-                        rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": " + result);
                         rtb_sendMsg.Clear();
                     }
                 }
