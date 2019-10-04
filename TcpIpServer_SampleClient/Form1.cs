@@ -120,9 +120,9 @@ namespace TcpIpServer_SampleClient
              * character in the buffer needs to be a termination character, so that the TCP/IP-Server knows
              * when the TCP stream ends. In this case, the termination character is '0'.
              * ########################################################################################## */
-            int varLen = 3;
-            byte[] inBuf = new byte[512- varLen*8];                           
-            inBuf[4] = (byte)(0x3e + 1 - varLen);    inBuf[12] = 0x1; inBuf[14] = 0x1;
+            int varLen = 0;
+            byte[] inBuf = new byte[48- varLen*8];                           
+            inBuf[4] = (byte)(0x4 + 1 - varLen);    inBuf[12] = 0x1; inBuf[14] = 0x1;
             inBuf[0x10] = 0x8;
 
             ASCIIEncoding enc = new ASCIIEncoding();
