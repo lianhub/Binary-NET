@@ -124,6 +124,7 @@ namespace TcpIpServer_SampleClient
             byte[] inBuf = new byte[48- varLen*8];                           
             inBuf[4] = (byte)(0x4 + 1 - varLen);    inBuf[12] = 0x1; inBuf[14] = 0x1;
             inBuf[0x10] = 0x8;
+            inBuf[0x20] = 0x17;     //questionId       
 
             ASCIIEncoding enc = new ASCIIEncoding();
             byte[] tempBuffer = enc.GetBytes(rtb_sendMsg.Text);
@@ -154,10 +155,11 @@ namespace TcpIpServer_SampleClient
                         int res = _socket.EndReceive(asynRes);                            
                         if (_rcvBuffer[0x10] == 3)
                         {
-                            if (_rcvBuffer[0x12] == 8)
+                            rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-answerId " + _rcvBuffer[0x20]+ " ("+ inBuf.Length + ")= " + res);
+                            /*if (_rcvBuffer[0x12] == 8)
                                 rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-bootstrap " + inBuf.Length + " = " +res);
                             else
-                                rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-call" + inBuf.Length + " = "+res);
+                                rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-call" + inBuf.Length + " = "+res);*/
                         }
                         else
                             rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is others" + inBuf.Length + " = "+res);
