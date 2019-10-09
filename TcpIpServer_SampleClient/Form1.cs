@@ -121,7 +121,12 @@ namespace TcpIpServer_SampleClient
              * when the TCP stream ends. In this case, the termination character is '0'.
              * ########################################################################################## */
             int varLen = 0;
-            byte[] inBuf = new byte[184- varLen*8];                           
+            byte[] inBuf = new byte[48 - varLen * 8];
+            inBuf[4] = (byte)(0x4 + 1 - varLen); inBuf[12] = 0x1; inBuf[14] = 0x1;
+            inBuf[0x10] = 0x8;
+            inBuf[0x20] = 0x17;     //questionId  
+
+            /*byte[] inBuf = new byte[184- varLen*8];                           
             inBuf[4] = (byte)(0x15 + 1 - varLen);    inBuf[0x0c] = 1; inBuf[0x0e] = 1;
             inBuf[0x10] = 0x2;                       inBuf[0x1c] = 3; inBuf[0x1e] = 3;
             inBuf[0x20] = 0x15;     //questionId  
@@ -137,7 +142,7 @@ namespace TcpIpServer_SampleClient
             inBuf[0x94] = 1; inBuf[0x96] = 1;
             inBuf[0xa0] = 1; inBuf[0xa4] = 7; inBuf[0xac] = 1;
             inBuf[0xb4] = 1; inBuf[0xb6] = 1; 
-
+            */
             ASCIIEncoding enc = new ASCIIEncoding();
             byte[] tempBuffer = enc.GetBytes(rtb_sendMsg.Text);
             byte[] sendBuffer = new byte[tempBuffer.Length + 1];
