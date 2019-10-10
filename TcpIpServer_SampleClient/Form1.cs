@@ -22,7 +22,7 @@ namespace TcpIpServer_SampleClient
          * Constants
          * ########################################################################################## */
         private const int RCVBUFFERSIZE = 1024; // buffer size for receive buffer
-        private const string DEFAULTIP = "169.254.28.28";//"127.0.0.1";
+        private const string DEFAULTIP = "169.254.95.248";//"127.0.0.1";
         private const string DEFAULTPORT = "200";
         private const int TIMERTICK = 100;
 
