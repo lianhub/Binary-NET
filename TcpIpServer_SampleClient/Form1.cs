@@ -120,43 +120,28 @@ namespace TcpIpServer_SampleClient
              * character in the buffer needs to be a termination character, so that the TCP/IP-Server knows
              * when the TCP stream ends. In this case, the termination character is '0'.
              * ########################################################################################## */
-            int varLen = 0;
+            /*int varLen = 0;
             byte[] inBuf = new byte[48 - varLen * 8];
             inBuf[4] = (byte)(0x4 + 1 - varLen); inBuf[12] = 0x1; inBuf[14] = 0x1;
             inBuf[0x10] = 0x8;
             inBuf[0x20] = 0x17;     //questionId  
-
-            /*byte[] inBuf = new byte[184- varLen*8];                           
-            inBuf[4] = (byte)(0x15 + 1 - varLen);    inBuf[0x0c] = 1; inBuf[0x0e] = 1;
-            inBuf[0x10] = 0x2;                       inBuf[0x1c] = 3; inBuf[0x1e] = 3;
-            inBuf[0x20] = 0x15;     //questionId  
-                inBuf[0x28] = 0x36; inBuf[0x29] = 0xcc; inBuf[0x2a] = 0x35; inBuf[0x2b] = 0xdf;
-                inBuf[0x2c] = 0x92; inBuf[0x2d] = 0x33; inBuf[0x2e] = 0x98; inBuf[0x2f] = 0x97;
-            inBuf[0x30] = 0x07;     //allowThirdParty
-                inBuf[0x38] = 0x24;                   inBuf[0x3c] = 1; inBuf[0x3e] = 1;
-            inBuf[0x40] = 4; inBuf[0x46] = 2;
-            inBuf[0x50] = 4; inBuf[0x56] = 1;         inBuf[0x58] = 0x29; inBuf[0x5c] = 7;
-            inBuf[0x64] = 2; inBuf[0x66] = 2; 
-                                              inBuf[0x6d] = 0xc0; inBuf[0x6e] = 0x5e; inBuf[0x6f] = 0x40;
-            inBuf[0x8c] = 1;
-            inBuf[0x94] = 1; inBuf[0x96] = 1;
-            inBuf[0xa0] = 1; inBuf[0xa4] = 7; inBuf[0xac] = 1;
-            inBuf[0xb4] = 1; inBuf[0xb6] = 1; 
-            */
+      
             ASCIIEncoding enc = new ASCIIEncoding();
             byte[] tempBuffer = enc.GetBytes(rtb_sendMsg.Text);
             byte[] sendBuffer = new byte[tempBuffer.Length + 1];
             for (int i = 0; i < tempBuffer.Length; i++)
                 sendBuffer[i] = tempBuffer[i];
-            sendBuffer[tempBuffer.Length] = 0;
-
+            sendBuffer[tempBuffer.Length] = 0;*/
+    
             /* ##########################################################################################
              * Send buffer content via TCP/IP connection
              * ########################################################################################## */
             try
             {
                 //int send = _socket.Send(sendBuffer);
-                int send = _socket.Send(inBuf);
+                int send = _socket.Send(packets.pkt6);
+                              int len = packets.pkt6.Length;
+                //int send = _socket.Send(inBuf);
                 if (send == 0)
                     throw new Exception();
                 else
@@ -170,16 +155,10 @@ namespace TcpIpServer_SampleClient
                     if (asynRes.AsyncWaitHandle.WaitOne())
                     {
                         int res = _socket.EndReceive(asynRes);                            
-                        if (_rcvBuffer[0x10] == 3)
-                        {
-                            rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-answerId " + _rcvBuffer[0x20]+ " ("+ inBuf.Length + ")= " + res);
-                            /*if (_rcvBuffer[0x12] == 8)
-                                rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-bootstrap " + inBuf.Length + " = " +res);
-                            else
-                                rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-call" + inBuf.Length + " = "+res);*/
-                        }
+                        if (_rcvBuffer[0x10] == 3)                        
+                            rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is return-answerId " + _rcvBuffer[0x20]+ " ("+ len + ")= " + res);                                                 
                         else
-                            rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is others" + inBuf.Length + " = "+res);
+                            rtb_rcvMsg.AppendText("\n" + DateTime.Now.ToString() + ": me is others" + len + " = "+res);
 
                         rtb_sendMsg.Clear();
                     }
